@@ -20,7 +20,7 @@ class Review extends Model
         'rating' => 'integer',
     ];
 
-    // Relaciones
+
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class);

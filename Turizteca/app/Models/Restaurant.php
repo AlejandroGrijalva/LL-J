@@ -10,7 +10,7 @@ class Restaurant extends Model
 {
     use HasFactory;
 
-    // Mantén sincronizado con las migraciones
+
     public const CUISINES = [
         'mexican',
         'seafood',
@@ -60,14 +60,12 @@ class Restaurant extends Model
 
     protected $casts = [
         'average_price' => 'integer',
-        // Si prefieres formateo explícito:
-        // 'location_lat' => 'decimal:6',
-        // 'location_lng' => 'decimal:6',
+
         'opens_at' => 'datetime:H:i:s',
         'closes_at' => 'datetime:H:i:s',
     ];
 
-    // Relaciones
+
     public function reviews()
     {
         return $this->hasMany(Review::class);

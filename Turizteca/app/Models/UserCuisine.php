@@ -39,7 +39,7 @@ class UserCuisine extends Model
         'cuisine',
     ];
 
-    // Relaciones
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -19,7 +19,7 @@ class Sponsorship extends Model
         'visibility_level' => 'integer',
     ];
 
-    // Relaciones
+
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class);
