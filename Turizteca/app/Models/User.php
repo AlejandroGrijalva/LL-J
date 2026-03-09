@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'prefered_budget',
     ];
 
     /**
@@ -44,5 +46,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function cuisines()
+    {
+        return $this->hasMany(UserCuisine::class);
+    }
+
+    protected $appends = ['cuisines_list'];
+
+    public function getCuisinesListAttribute(): array
+    {
+        return $this->cuisines()->pluck('cuisine')->all();
     }
 }
