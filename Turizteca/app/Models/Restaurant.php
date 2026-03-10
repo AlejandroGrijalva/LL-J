@@ -10,43 +10,8 @@ class Restaurant extends Model
 {
     use HasFactory;
 
-    // Mantén sincronizado con las migraciones
-    public const CUISINES = [
-        'mexican',
-        'seafood',
-        'italian',
-        'bbq',
-        'steakhouse',
-        'vegan',
-        'vegetarian',
-        'asian',
-        'japanese',
-        'chinese',
-        'thai',
-        'indian',
-        'mediterranean',
-        'fast_food',
-        'cafe',
-        'bakery',
-        'tacos',
-        'pizza',
-        'burgers',
-        'bar',
-        'fusion',
-        'local'
-    ];
-
-    public const OPENING_TYPES = [
-        'all_day',
-        'breakfast_lunch',
-        'lunch_dinner',
-        'dinner_only',
-        'weekdays_only',
-        'weekends_only',
-        'custom'
-    ];
-
     protected $fillable = [
+        'owner_id',
         'name',
         'description',
         'cuisine_type',
@@ -55,26 +20,26 @@ class Restaurant extends Model
         'location_lng',
         'opening_hours_type',
         'opens_at',
-        'closes_at',
+        'closes_at'
     ];
 
-    protected $casts = [
-        'average_price' => 'integer',
-        // Si prefieres formateo explícito:
-        // 'location_lat' => 'decimal:6',
-        // 'location_lng' => 'decimal:6',
-        'opens_at' => 'datetime:H:i:s',
-        'closes_at' => 'datetime:H:i:s',
-    ];
-
-    // Relaciones
-    public function reviews()
+    public function owner()
     {
-        return $this->hasMany(Review::class);
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function managers()
+    {
+        return $this->belongsToMany(User::class, 'restaurant_managers');
     }
 
     public function sponsorships()
     {
         return $this->hasMany(Sponsorship::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }

@@ -11,29 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('reviews', function(Blueprint $table){
             $table->id();
-
-            $table->foreignId('restaurant_id')
-                  ->references('id')
-                  ->on('restaurants')
-                  ->onDelete('cascade');
-
-            $table->foreignId('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
-
-            $table->tinyInteger('rating'); // validate 1..5 in app/model
-            $table->string('comment', 2000)->nullable();
+            $table->foreignId('restaurant_id')->constrained('restaurants')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->enum('rating',['1','2','3','4','5']);
+            $table->string('comment',2000)->nullable();
             $table->timestamps();
-
-            $table->index('restaurant_id');
-            $table->index('user_id');
-            $table->index('rating');
-
-            // Optional: one review per user per restaurant
-            // $table->unique(['restaurant_id', 'user_id']);
         });
     }
 

@@ -11,18 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', function(Blueprint $table){
             $table->id();
-            // Adjusted to match our design
-            $table->string('name', 120);
-            $table->string('email', 254)->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password', 255);
-            $table->rememberToken();
-
-            // New field from our design (1=Low, 2=Medium, 3=High)
-            $table->tinyInteger('preferred_budget')->nullable();
-
+            $table->string('name',120);
+            $table->string('email',254)->unique();
+            $table->string('password');
+            $table->enum('account_type',['customer','owner','admin'])->default('customer');
+            $table->enum('preferred_budget',['low','medium','high'])->nullable();
             $table->timestamps();
         });
 

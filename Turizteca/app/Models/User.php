@@ -18,12 +18,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'prefered_budget',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'account_type', 'preferred_budget'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -49,6 +44,16 @@ class User extends Authenticatable
     }
 
 
+    public function restaurantsOwned()
+    {
+        return $this->hasMany(Restaurant::class, 'owner_id');
+    }
+
+    public function managedRestaurants()
+    {
+        return $this->belongsToMany(Restaurant::class, 'restaurant_managers');
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -57,12 +62,5 @@ class User extends Authenticatable
     public function cuisines()
     {
         return $this->hasMany(UserCuisine::class);
-    }
-
-    protected $appends = ['cuisines_list'];
-
-    public function getCuisinesListAttribute(): array
-    {
-        return $this->cuisines()->pluck('cuisine')->all();
     }
 }
