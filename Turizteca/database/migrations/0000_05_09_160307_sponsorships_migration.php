@@ -11,19 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sponsorships', function (Blueprint $table) {
+        Schema::create('sponsorships', function(Blueprint $table){
             $table->id();
-
-            $table->foreignId('restaurant_id')
-                  ->references('id')
-                  ->on('restaurants')
-                  ->onDelete('cascade');
-
-            $table->tinyInteger('visibility_level'); // 1=Low,2=Medium,3=High
-            $table->string('label', 30)->default('Patrocinado');
+            $table->foreignId('restaurant_id')->constrained('restaurants')->cascadeOnDelete();
+            $table->enum('visibility_level',['low','medium','high']);
+            $table->string('label',30)->default('Patrocinado');
             $table->timestamps();
-
-            $table->index('restaurant_id');
         });
     }
 

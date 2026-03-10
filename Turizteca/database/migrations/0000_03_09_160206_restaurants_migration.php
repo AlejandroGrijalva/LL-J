@@ -11,42 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $cuisines = [
-            'mexican','seafood','italian','bbq','steakhouse','vegan','vegetarian',
-            'asian','japanese','chinese','thai','indian','mediterranean',
-            'fast_food','cafe','bakery','tacos','pizza','burgers','bar','fusion','local'
-        ];
-
-        $openingTypes = [
-            'all_day',        // simple: same open/close daily or 24h
-            'breakfast_lunch',
-            'lunch_dinner',
-            'dinner_only',
-            'weekdays_only',
-            'weekends_only',
-            'custom'          // handle logic in app if needed
-        ];
-
-        Schema::create('restaurants', function (Blueprint $table) use ($cuisines, $openingTypes) {
+        Schema::create('restaurants', function(Blueprint $table){
             $table->id();
-            $table->string('name', 120);
+            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
+            $table->string('name',120);
             $table->text('description')->nullable();
-            $table->enum('cuisine_type', $cuisines);
-            $table->integer('average_price')->nullable(); // local currency units
-            $table->decimal('location_lat', 9, 6);
-            $table->decimal('location_lng', 9, 6);
-
-            // Replaces JSON opening_hours
-            $table->enum('opening_hours_type', $openingTypes)->default('all_day');
+            $table->enum('cuisine_type',[ 'mexican','seafood','italian','bbq','steakhouse','vegan','vegetarian','asian','japanese','chinese','thai','indian','mediterranean','fast_food','cafe','bakery','tacos','pizza','burgers','bar','fusion','local']);
+            $table->integer('average_price')->nullable();
+            $table->decimal('location_lat',9,6);
+            $table->decimal('location_lng',9,6);
+            $table->enum('opening_hours_type',['all_day','breakfast_lunch','lunch_dinner','dinner_only','weekdays_only','weekends_only','custom'])->default('all_day');
             $table->time('opens_at')->nullable();
             $table->time('closes_at')->nullable();
-
             $table->timestamps();
-
-            // Helpful indexes
-            $table->index('cuisine_type');
-            $table->index(['location_lat', 'location_lng']);
-            $table->index('opening_hours_type');
         });
     }
 
