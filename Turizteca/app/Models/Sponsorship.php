@@ -9,16 +9,7 @@ class Sponsorship extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'restaurant_id',
-        'visibility_level',
-        'label',
-    ];
-
-    protected $casts = [
-        'visibility_level' => 'integer',
-    ];
-
+    protected $fillable = ['restaurant_id', 'visibility_level', 'label'];
 
     public function restaurant()
     {

@@ -9,36 +9,7 @@ class UserCuisine extends Model
 {
     use HasFactory;
 
-    public const CUISINES = [
-        'mexican',
-        'seafood',
-        'italian',
-        'bbq',
-        'steakhouse',
-        'vegan',
-        'vegetarian',
-        'asian',
-        'japanese',
-        'chinese',
-        'thai',
-        'indian',
-        'mediterranean',
-        'fast_food',
-        'cafe',
-        'bakery',
-        'tacos',
-        'pizza',
-        'burgers',
-        'bar',
-        'fusion',
-        'local'
-    ];
-
-    protected $fillable = [
-        'user_id',
-        'cuisine',
-    ];
-
+    protected $fillable = ['user_id', 'cuisine'];
 
     public function user()
     {
