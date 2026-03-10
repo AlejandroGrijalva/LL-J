@@ -9,17 +9,7 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'restaurant_id',
-        'user_id',
-        'rating',
-        'comment',
-    ];
-
-    protected $casts = [
-        'rating' => 'integer',
-    ];
-
+    protected $fillable = ['restaurant_id', 'user_id', 'rating', 'comment'];
 
     public function restaurant()
     {
