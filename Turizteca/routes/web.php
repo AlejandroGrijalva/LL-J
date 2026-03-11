@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 
 // Login
@@ -14,4 +15,6 @@ Route::prefix('dashboard')->group(function () {
     Route::view('/settings', 'admin.settings')->name('admin.settings');
 });
 
-Route::redirect('/', '/dashboard');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
