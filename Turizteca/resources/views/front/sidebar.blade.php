@@ -2,12 +2,23 @@
 <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
 <aside id="sidebar" class="sidebar hidden lg:flex lg:flex-col w-60 shrink-0">
   <div class="px-5 py-4 flex items-center gap-3 border-b border-slate-800">
-    <div class="h-10 w-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold">TZ</div>
-    <div>
-      <div class="text-base font-semibold">Turizteca</div>
-      <div class="text-xs text-slate-400">Panel de Administración</div>
-    </div>
+  <div
+    class="inline-flex h-12 w-12 items-center justify-center rounded-md bg-white p-1
+           ring-1 ring-slate-200 shadow-sm overflow-hidden"
+  >
+    <img
+      src="{{ asset('/turizteca/img/Turizteca-Logo.png') }}"
+      alt="Turizteca Logo"
+      class="h-full w-full object-contain"
+      loading="lazy"
+      decoding="async"
+    />
   </div>
+  <div>
+    <div class="text-base font-semibold">Turizteca</div>
+    <div class="text-xs text-slate-400">Panel de Administración</div>
+  </div>
+</div>
   <nav class="p-3 overflow-y-auto">
     <div class="text-xs font-semibold text-slate-400 uppercase px-2 mb-2">Navegación</div>
     <ul class="space-y-1">
