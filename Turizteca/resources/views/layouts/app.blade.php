@@ -9,8 +9,15 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+<<<<<<< HEAD
     <link rel="stylesheet" href="{{ asset('/turizteca/css/turizteca-login.css') }}">
 
+=======
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+@extends('layouts.app')
+>>>>>>> cf04783 (login)
     <!-- Scripts -->
    
 </head>
