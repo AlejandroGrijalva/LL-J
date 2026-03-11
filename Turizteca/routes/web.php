@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::view('/login', 'auth.login')->name('login');
 
 // Dashboard
-Route::prefix('dashboard')->group(function () {
+Route::middleware('auth')->prefix('admin')->group(function () {
+
     Route::view('/', 'admin.overview')->name('admin');
     Route::view('/restaurants', 'admin.restaurants')->name('admin.restaurants');
     Route::view('/sponsorships', 'admin.sponsorships')->name('admin.sponsorships');
