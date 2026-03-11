@@ -6,12 +6,12 @@ Route::view('/login', 'auth.login')->name('login');
 
 // Dashboard
 Route::prefix('dashboard')->group(function () {
-    Route::view('/', 'dashboard.overview')->name('dashboard');
-    Route::view('/restaurants', 'dashboard.restaurants')->name('dashboard.restaurants');
-    Route::view('/sponsorships', 'dashboard.sponsorships')->name('dashboard.sponsorships');
-    Route::view('/reviews', 'dashboard.reviews')->name('dashboard.reviews');
-    Route::view('/users', 'dashboard.users')->name('dashboard.users');
-    Route::view('/settings', 'dashboard.settings')->name('dashboard.settings');
+    Route::view('/', 'admin.overview')->name('dashboard');
+    Route::view('/restaurants', 'admin.restaurants')->name('admin.restaurants');
+    Route::view('/sponsorships', 'admin.sponsorships')->name('admin.sponsorships');
+    Route::view('/reviews', 'admin.reviews')->name('admin.reviews');
+    Route::view('/users', 'admin.users')->name('admin.users');
+    Route::view('/settings', 'admin.settings')->name('admin.settings');
 });
 
 Route::redirect('/', '/dashboard');
