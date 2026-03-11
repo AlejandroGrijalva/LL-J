@@ -6,7 +6,7 @@ Route::view('/login', 'auth.login')->name('login');
 
 // Dashboard
 Route::prefix('dashboard')->group(function () {
-    Route::view('/', 'admin.overview')->name('dashboard');
+    Route::view('/', 'admin.overview')->name('admin');
     Route::view('/restaurants', 'admin.restaurants')->name('admin.restaurants');
     Route::view('/sponsorships', 'admin.sponsorships')->name('admin.sponsorships');
     Route::view('/reviews', 'admin.reviews')->name('admin.reviews');
