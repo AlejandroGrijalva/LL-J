@@ -9,22 +9,14 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-<<<<<<< HEAD
-    <link rel="stylesheet" href="{{ asset('/turizteca/css/turizteca-login.css') }}">
 
-=======
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-@extends('layouts.app')
->>>>>>> cf04783 (login)
     <!-- Scripts -->
    
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
+            <div class="container" style="display: none">
             
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

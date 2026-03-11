@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/turizteca-login.css') }}">
+<link rel="stylesheet" href="{{ asset('/turizteca/css/turizteca-login.css') }}">
 <!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
 
