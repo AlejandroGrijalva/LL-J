@@ -10,6 +10,7 @@
     tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brand: { 50:'#eef6ff',100:'#d9ebff',200:'#b7d9ff',300:'#8fc2ff',400:'#63a7ff',500:'#3b8aff',600:'#2563eb',700:'#1d4ed8',800:'#153f8c',900:'#122b61' } } } } };
   </script>
   <link rel="stylesheet" href="{{ asset('turizteca/css/turizteca-admin.css') }}">
+  @stack('styles')
 </head>
 <body class="h-full text-slate-100">
   <div class="h-screen w-full flex overflow-hidden">
@@ -32,5 +33,6 @@
     if (sidebarBackdrop){ sidebarBackdrop.addEventListener('click', closeSidebarMobile); }
     window.addEventListener('resize', () => { closeSidebarMobile(); sidebar.classList.remove('hidden-lg'); });
   </script>
+  @stack('scripts')
 </body>
 </html>
