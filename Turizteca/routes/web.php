@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\OverviewController;
-use App\Http\Controllers\Admin\RestaurantsController;
-use App\Http\Controllers\Admin\SponsorshipsController;
-use App\Http\Controllers\Admin\ReviewsController;
-use App\Http\Controllers\Admin\UsersController;
-use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\OverviewController;
+use App\Http\Controllers\RestaurantsController;
+use App\Http\Controllers\SponsorshipsController;
+use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\SettingsController;
 
 // Login
 Route::view('/login', 'auth.login')->name('login');
