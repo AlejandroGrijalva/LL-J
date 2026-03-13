@@ -18,6 +18,10 @@ Route::middleware(['auth', 'can:access-admin'])->prefix('admin')->group(function
 });
 
 
+Route::get('/', function () {
+    return redirect('/login');
+});
+
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');

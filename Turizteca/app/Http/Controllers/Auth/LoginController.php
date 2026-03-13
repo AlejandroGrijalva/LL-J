@@ -47,6 +47,6 @@ class LoginController extends Controller
         }
 
         // Clientes/usuarios normales
-        return redirect()->intended(route('home')); // Ajusta 'dashboard' a tu ruta real
+        return redirect()->intended(route('dashboard')); // Ajusta 'dashboard' a tu ruta real
     }
 }
