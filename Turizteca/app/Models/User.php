@@ -49,10 +49,7 @@ class User extends Authenticatable
         return $this->hasMany(Restaurant::class, 'owner_id');
     }
 
-    public function managedRestaurants()
-    {
-        return $this->belongsToMany(Restaurant::class, 'restaurant_managers');
-    }
+
 
     public function reviews()
     {
