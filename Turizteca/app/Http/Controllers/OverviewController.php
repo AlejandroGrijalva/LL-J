@@ -13,8 +13,8 @@ class OverviewController extends Controller
     public function index()
     {
         $totalRestaurants   = Restaurant::count();
-        $activeSponsorships = Sponsorship::count(); // No hay campo "activo", contamos todos
-        $averageRating      = Review::avg('rating'); // Enum string '1'...'5', MySQL lo promedia
+        $activeSponsorships = Sponsorship::count();
+        $averageRating      = Review::avg('rating');
         $registeredUsers    = User::count();
 
         return view('admin.overview', compact(
