@@ -10,10 +10,10 @@
     <div class="w-full max-w-md">
 
         <div class="text-center mb-6">
-            <div class="mx-auto h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold">
-                TZ
+            <div class="mx-auto h-40 w-40 rounded-md bg-white flex items-center justify-center text-white font-bold">
+                <img src="{{ asset('/turizteca/img/Turizteca-Logo.png') }}" alt="Turizteca Logo" class="h-[90%] w-full object-contain" loading="lazy" decoding="async"/>
             </div>
-
+                
             <h1 class="mt-3 text-2xl font-semibold">Turizteca</h1>
             <p class="mt-1 text-sm text-gray-400">Accede al panel de administración</p>
         </div>
