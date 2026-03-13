@@ -28,10 +28,7 @@ class Restaurant extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function managers()
-    {
-        return $this->belongsToMany(User::class, 'restaurant_managers');
-    }
+
 
     public function sponsorships()
     {
