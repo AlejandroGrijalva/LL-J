@@ -12,44 +12,41 @@ class RestaurantsController extends Controller
 {
     public function index(Request $request)
     {
-        $restaurants = Restaurant::with(['owner','managers','sponsorships'])
-            ->withAvg('reviews', 'rating')   // <- promedio rating
+        $restaurants = Restaurant::with(['owner', 'sponsorships'])
+            ->withAvg('reviews', 'rating') // promedio rating (rating es enum string, MySQL lo promedia bien)
             ->latest('id')
             ->paginate(10);
 
         $owners = User::where('account_type', 'owner')
             ->orderBy('name')
-            ->get(['id','name']);
+            ->get(['id', 'name']);
 
-        $managerCandidates = User::whereIn('account_type', ['owner','admin'])
-            ->orderBy('name')
-            ->get(['id','name','account_type']);
-
-        return view('admin.restaurants', compact('restaurants','owners','managerCandidates'));
+        return view('admin.restaurants', compact('restaurants', 'owners'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'owner_id'          => ['required','exists:users,id'],
-            'name'              => ['required','string','max:120'],
-            'description'       => ['nullable','string'],
-            'cuisine_type'      => ['required', Rule::in(['mexican','seafood','italian','bbq','steakhouse','vegan','vegetarian','asian','japanese','chinese','thai','indian','mediterranean','fast_food','cafe','bakery','tacos','pizza','burgers','bar','fusion','local'])],
-            'average_price'     => ['nullable','integer','min:0'],
-            'location_lat'      => ['required','numeric','between:-90,90'],
-            'location_lng'      => ['required','numeric','between:-180,180'],
-            'opening_hours_type'=> ['required', Rule::in(['all_day','breakfast_lunch','lunch_dinner','dinner_only','weekdays_only','weekends_only','custom'])],
-            'opens_at'          => ['nullable','date_format:H:i'],
-            'closes_at'         => ['nullable','date_format:H:i'],
-            'manager_ids'       => ['nullable','array'],
-            'manager_ids.*'     => ['integer','exists:users,id'],
+            'owner_id'           => ['required', 'exists:users,id'],
+            'name'               => ['required', 'string', 'max:120'],
+            'description'        => ['nullable', 'string'],
+            'cuisine_type'       => ['required', Rule::in([
+                'mexican','seafood','italian','bbq','steakhouse','vegan','vegetarian','asian',
+                'japanese','chinese','thai','indian','mediterranean','fast_food','cafe','bakery',
+                'tacos','pizza','burgers','bar','fusion','local'
+            ])],
+            'average_price'      => ['nullable', 'integer', 'min:0'],
+            'location_lat'       => ['required', 'numeric', 'between:-90,90'],
+            'location_lng'       => ['required', 'numeric', 'between:-180,180'],
+            'opening_hours_type' => ['required', Rule::in([
+                'all_day','breakfast_lunch','lunch_dinner','dinner_only',
+                'weekdays_only','weekends_only','custom'
+            ])],
+            'opens_at'           => ['nullable', 'date_format:H:i'],
+            'closes_at'          => ['nullable', 'date_format:H:i'],
         ]);
 
-        $restaurant = Restaurant::create($data);
-
-        if ($request->has('manager_ids')) {
-            $restaurant->managers()->sync($data['manager_ids'] ?? []);
-        }
+        Restaurant::create($data);
 
         return back()->with('success', 'Restaurante creado correctamente.');
     }
@@ -57,25 +54,26 @@ class RestaurantsController extends Controller
     public function update(Request $request, Restaurant $restaurant)
     {
         $data = $request->validate([
-            'owner_id'          => ['required','exists:users,id'],
-            'name'              => ['required','string','max:120'],
-            'description'       => ['nullable','string'],
-            'cuisine_type'      => ['required', Rule::in(['mexican','seafood','italian','bbq','steakhouse','vegan','vegetarian','asian','japanese','chinese','thai','indian','mediterranean','fast_food','cafe','bakery','tacos','pizza','burgers','bar','fusion','local'])],
-            'average_price'     => ['nullable','integer','min:0'],
-            'location_lat'      => ['required','numeric','between:-90,90'],
-            'location_lng'      => ['required','numeric','between:-180,180'],
-            'opening_hours_type'=> ['required', Rule::in(['all_day','breakfast_lunch','lunch_dinner','dinner_only','weekdays_only','weekends_only','custom'])],
-            'opens_at'          => ['nullable','date_format:H:i'],
-            'closes_at'         => ['nullable','date_format:H:i'],
-            'manager_ids'       => ['nullable','array'],
-            'manager_ids.*'     => ['integer','exists:users,id'],
+            'owner_id'           => ['required', 'exists:users,id'],
+            'name'               => ['required', 'string', 'max:120'],
+            'description'        => ['nullable', 'string'],
+            'cuisine_type'       => ['required', Rule::in([
+                'mexican','seafood','italian','bbq','steakhouse','vegan','vegetarian','asian',
+                'japanese','chinese','thai','indian','mediterranean','fast_food','cafe','bakery',
+                'tacos','pizza','burgers','bar','fusion','local'
+            ])],
+            'average_price'      => ['nullable', 'integer', 'min:0'],
+            'location_lat'       => ['required', 'numeric', 'between:-90,90'],
+            'location_lng'       => ['required', 'numeric', 'between:-180,180'],
+            'opening_hours_type' => ['required', Rule::in([
+                'all_day','breakfast_lunch','lunch_dinner','dinner_only',
+                'weekdays_only','weekends_only','custom'
+            ])],
+            'opens_at'           => ['nullable', 'date_format:H:i'],
+            'closes_at'          => ['nullable', 'date_format:H:i'],
         ]);
 
         $restaurant->update($data);
-
-        if ($request->has('manager_ids')) {
-            $restaurant->managers()->sync($data['manager_ids'] ?? []);
-        }
 
         return back()->with('success', 'Restaurante actualizado.');
     }
