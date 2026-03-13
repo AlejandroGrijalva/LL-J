@@ -42,11 +42,10 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if (strtolower((string) $user->account_type) === 'admin') {
-            // Si el usuario intentaba acceder a algo protegido de admin, lo respeta.
+
             return redirect()->intended(route('admin'));
         }
 
-        // Clientes/usuarios normales
-        return redirect()->intended(route('dashboard')); // Ajusta 'dashboard' a tu ruta real
+        return redirect()->intended(route('dashboard'));
     }
 }
