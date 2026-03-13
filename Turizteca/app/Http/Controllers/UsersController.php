@@ -13,7 +13,7 @@ class UsersController extends Controller
     {
         $users = User::latest('id')->paginate(10);
 
-        return view('admin.user', compact('users'));
+        return view('admin.users', compact('users'));
     }
 
     public function store(Request $request)
