@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Sponsorship;
 
 class SponsorshipsAPIController extends Controller
 {
@@ -11,7 +12,12 @@ class SponsorshipsAPIController extends Controller
      */
     public function index()
     {
-        //
+        // Traemos todos los patrocinios incluyendo los datos del restaurante
+        $sponsorships = Sponsorship::with('restaurant')->get();
+        return response()->json([
+            "data" => $sponsorships,
+            "status" => "success"
+        ]);
     }
 
     /**
@@ -27,7 +33,19 @@ class SponsorshipsAPIController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validamos los campos fillable de tu modelo Sponsorship
+        $request->validate([
+            'restaurant_id' => 'required|numeric',
+            'visibility_level' => 'required|string',
+            'label' => 'nullable|string'
+        ]);
+
+        $sponsorship = Sponsorship::create($request->all());
+
+        return response()->json([
+            "data" => $sponsorship,
+            "status" => "success"
+        ], 201);
     }
 
     /**
@@ -35,7 +53,19 @@ class SponsorshipsAPIController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $sponsorship = Sponsorship::with('restaurant')->find($id);
+        
+        if ($sponsorship == null) {
+            return response()->json([
+                "message" => "Patrocinio no encontrado",
+                "status" => "error"
+            ], 404);
+        }
+
+        return response()->json([
+            "data" => $sponsorship,
+            "status" => "success"
+        ]);
     }
 
     /**
@@ -51,7 +81,21 @@ class SponsorshipsAPIController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $sponsorship = Sponsorship::find($id);
+        
+        if ($sponsorship == null) {
+            return response()->json([
+                "message" => "Patrocinio no encontrado",
+                "status" => "error"
+            ], 404);
+        }
+
+        $sponsorship->update($request->all());
+
+        return response()->json([
+            "data" => $sponsorship,
+            "status" => "success"
+        ]);
     }
 
     /**
@@ -59,6 +103,20 @@ class SponsorshipsAPIController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $sponsorship = Sponsorship::find($id);
+        
+        if ($sponsorship == null) {
+            return response()->json([
+                "message" => "Patrocinio no encontrado",
+                "status" => "error"
+            ], 404);
+        }
+
+        $sponsorship->delete();
+
+        return response()->json([
+            "message" => "Patrocinio eliminado",
+            "status" => "success"
+        ], 204);
     }
 }
