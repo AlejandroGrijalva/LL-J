@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sponsorship;
 
@@ -12,7 +13,6 @@ class SponsorshipsAPIController extends Controller
      */
     public function index()
     {
-        // Traemos todos los patrocinios incluyendo los datos del restaurante
         $sponsorships = Sponsorship::with('restaurant')->get();
         return response()->json([
             "data" => $sponsorships,
@@ -33,7 +33,6 @@ class SponsorshipsAPIController extends Controller
      */
     public function store(Request $request)
     {
-        // Validamos los campos fillable de tu modelo Sponsorship
         $request->validate([
             'restaurant_id' => 'required|numeric',
             'visibility_level' => 'required|string',

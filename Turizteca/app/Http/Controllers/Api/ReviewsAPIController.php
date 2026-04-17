@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Review;
 
@@ -12,7 +13,6 @@ class ReviewsAPIController extends Controller
      */
     public function index()
     {
-        // Traemos todas las reseñas incluyendo al autor y al restaurante
         $reviews = Review::with(['restaurant', 'user'])->get();
         return response()->json([
             "data" => $reviews,
@@ -33,7 +33,6 @@ class ReviewsAPIController extends Controller
      */
     public function store(Request $request)
     {
-        // Validamos los campos fillable
         $request->validate([
             'restaurant_id' => 'required|numeric',
             'user_id' => 'required|numeric',
@@ -91,7 +90,6 @@ class ReviewsAPIController extends Controller
             ], 404);
         }
 
-        // Si permitimos actualizar, validamos nuevamente el rating
         $request->validate([
             'rating' => 'sometimes|required|integer|min:1|max:5',
         ]);
