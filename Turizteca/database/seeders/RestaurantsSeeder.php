@@ -1,45 +1,113 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Http\Controllers;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use Illuminate\Http\Request;
+use App\Models\Restaurant;
 
-class RestaurantsSeeder extends Seeder
+class RRestaurantsAPIController extends Controller
 {
-    public function run(): void
+    
+    public function index()
     {
-        $faker = Faker::create();
+        $restaurants = Restaurant::with('owner')->get();
+        return response()->json([
+            "data" => $restaurants,
+            "status" => "success"
+        ]);
+    }
 
-        $cuisines = [
-            'mexican','seafood','italian','bbq','steakhouse','vegan','vegetarian',
-            'asian','japanese','chinese','thai','indian','mediterranean','fast_food',
-            'cafe','bakery','tacos','pizza','burgers','bar','fusion','local'
-        ];
+    
+    public function create()
+    {
+       
+    }
 
-        $restaurants = [];
+    
+    public function store(Request $request)
+    {
+        $request->validate([
+            'owner_id' => 'required|numeric',
+            'name' => 'required|string',
+            'description' => 'nullable|string',
+            'cuisine_type' => 'nullable|string',
+            'average_price' => 'nullable|numeric',
+            'location_lat' => 'nullable|numeric',
+            'location_lng' => 'nullable|numeric',
+            'opening_hours_type' => 'nullable|string',
+            'opens_at' => 'nullable|string',
+            'closes_at' => 'nullable|string'
+        ]);
 
-        for ($i = 1; $i <= 15; $i++) {
+        $restaurant = Restaurant::create($request->all());
 
-            $restaurants[] = [
-                'id' => $i,
-                'owner_id' => $faker->numberBetween(2,5), // mismo rango que tu código
-                'name' => $faker->company . " Restaurant",
-                'description' => $faker->sentence(10),
-                'cuisine_type' => $faker->randomElement($cuisines),
-                'average_price' => $faker->numberBetween(80,400),
+        return response()->json([
+            "data" => $restaurant,
+            "status" => "success"
+        ], 201);
+    }
 
-                // mismas coordenadas aproximadas que tenías
-                'location_lat' => 28 + ($faker->numberBetween(-100,100)/1000),
-                'location_lng' => -107 + ($faker->numberBetween(-100,100)/1000),
-
-                'opening_hours_type' => 'all_day',
-                'opens_at' => null,
-                'closes_at' => null
-            ];
+    
+    public function show(string $id)
+    {
+        $restaurant = Restaurant::with('owner')->find($id);
+        
+        if ($restaurant == null) {
+            return response()->json([
+                "message" => "Restaurante no encontrado",
+                "status" => "error"
+            ], 404);
         }
 
-        DB::table('restaurants')->insert($restaurants);
+        return response()->json([
+            "data" => $restaurant,
+            "status" => "success"
+        ]);
+    }
+
+    
+    public function edit(string $id)
+    {
+        
+    }
+
+    
+    public function update(Request $request, string $id)
+    {
+        $restaurant = Restaurant::find($id);
+        
+        if ($restaurant == null) {
+            return response()->json([
+                "message" => "Restaurante no encontrado",
+                "status" => "error"
+            ], 404);
+        }
+
+        $restaurant->update($request->all());
+
+        return response()->json([
+            "data" => $restaurant,
+            "status" => "success"
+        ]);
+    }
+
+    
+    public function destroy(string $id)
+    {
+        $restaurant = Restaurant::find($id);
+        
+        if ($restaurant == null) {
+            return response()->json([
+                "message" => "Restaurante no encontrado",
+                "status" => "error"
+            ], 404);
+        }
+
+        $restaurant->delete();
+
+        return response()->json([
+            "message" => "Restaurante eliminado",
+            "status" => "success"
+        ], 204);
     }
 }

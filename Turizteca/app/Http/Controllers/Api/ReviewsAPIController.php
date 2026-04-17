@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Review;
 
 class ReviewsAPIController extends Controller
 {
@@ -11,7 +12,12 @@ class ReviewsAPIController extends Controller
      */
     public function index()
     {
-        //
+        // Traemos todas las reseñas incluyendo al autor y al restaurante
+        $reviews = Review::with(['restaurant', 'user'])->get();
+        return response()->json([
+            "data" => $reviews,
+            "status" => "success"
+        ]);
     }
 
     /**
@@ -27,7 +33,20 @@ class ReviewsAPIController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validamos los campos fillable
+        $request->validate([
+            'restaurant_id' => 'required|numeric',
+            'user_id' => 'required|numeric',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string'
+        ]);
+
+        $review = Review::create($request->all());
+
+        return response()->json([
+            "data" => $review,
+            "status" => "success"
+        ], 201);
     }
 
     /**
@@ -35,7 +54,19 @@ class ReviewsAPIController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $review = Review::with(['restaurant', 'user'])->find($id);
+        
+        if ($review == null) {
+            return response()->json([
+                "message" => "Reseña no encontrada",
+                "status" => "error"
+            ], 404);
+        }
+
+        return response()->json([
+            "data" => $review,
+            "status" => "success"
+        ]);
     }
 
     /**
@@ -51,7 +82,26 @@ class ReviewsAPIController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $review = Review::find($id);
+        
+        if ($review == null) {
+            return response()->json([
+                "message" => "Reseña no encontrada",
+                "status" => "error"
+            ], 404);
+        }
+
+        // Si permitimos actualizar, validamos nuevamente el rating
+        $request->validate([
+            'rating' => 'sometimes|required|integer|min:1|max:5',
+        ]);
+
+        $review->update($request->all());
+
+        return response()->json([
+            "data" => $review,
+            "status" => "success"
+        ]);
     }
 
     /**
@@ -59,6 +109,20 @@ class ReviewsAPIController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $review = Review::find($id);
+        
+        if ($review == null) {
+            return response()->json([
+                "message" => "Reseña no encontrada",
+                "status" => "error"
+            ], 404);
+        }
+
+        $review->delete();
+
+        return response()->json([
+            "message" => "Reseña eliminada",
+            "status" => "success"
+        ], 204);
     }
 }
