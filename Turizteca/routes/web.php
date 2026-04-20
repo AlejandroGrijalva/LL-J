@@ -36,7 +36,13 @@ Route::middleware(['auth', 'can:access-admin'])
         Route::delete('/users/{user}', [UsersController::class,         'destroy'])->name('admin.users.destroy');
 
         Route::get('/settings',       [SettingsController::class,      'index'])->name('admin.settings');
+        
+        
     });
+
+Route::get('/docs', function() {
+            return view('docs');
+        })->name('docs');
 
 Route::get('/', fn() => redirect('/login'));
 
