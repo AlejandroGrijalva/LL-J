@@ -564,7 +564,7 @@
                     </div>
                 </section>
 
-                <!-- PUT /api/user (auth) -->
+                <!-- PUT /api/user hola (auth) -->
                 <section id="put-auth-user" class="doc-section">
                     <h2 class="section-title"><i class="bi bi-pencil-square text-warning"></i>Actualizar Perfil (Autenticado)</h2>
                     <div class="api-card">
@@ -1685,6 +1685,7 @@
                         <span class="fw-bold">422 Unprocessable Entity — Validación fallida</span>
                     </div>
                     <div class="api-body">
+                        
                         <div class="code-block-header">JSON Response</div>
                         <pre><code class="language-json">{
     "message": "The given data was invalid.",
