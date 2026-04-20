@@ -13,6 +13,7 @@ class SponsorshipsAPIController extends Controller
      */
     public function index()
     {
+        
         $sponsorships = Sponsorship::with('restaurant')->get();
         return response()->json([
             "data" => $sponsorships,
@@ -33,6 +34,7 @@ class SponsorshipsAPIController extends Controller
      */
     public function store(Request $request)
     {
+        
         $request->validate([
             'restaurant_id' => 'required|numeric',
             'visibility_level' => 'required|string',
