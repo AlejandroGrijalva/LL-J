@@ -1,113 +1,39 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Database\Seeders;
 
-use Illuminate\Http\Request;
-use App\Models\Restaurant;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
-class RRestaurantsAPIController extends Controller
+class RestaurantsSeeder extends Seeder
 {
-    
-    public function index()
+    public function run(): void
     {
-        $restaurants = Restaurant::with('owner')->get();
-        return response()->json([
-            "data" => $restaurants,
-            "status" => "success"
-        ]);
-    }
+        $faker = Faker::create();
 
-    
-    public function create()
-    {
-       
-    }
+        $cuisineTypes = ['mexican', 'seafood', 'italian', 'bbq', 'steakhouse', 'vegan', 'vegetarian', 'asian', 'japanese', 'chinese', 'thai', 'indian', 'mediterranean', 'fast_food', 'cafe', 'bakery', 'tacos', 'pizza', 'burgers', 'bar', 'fusion', 'local'];
+        $openingHoursTypes = ['all_day', 'breakfast_lunch', 'lunch_dinner', 'dinner_only', 'weekdays_only', 'weekends_only', 'custom'];
 
-    
-    public function store(Request $request)
-    {
-        $request->validate([
-            'owner_id' => 'required|numeric',
-            'name' => 'required|string',
-            'description' => 'nullable|string',
-            'cuisine_type' => 'nullable|string',
-            'average_price' => 'nullable|numeric',
-            'location_lat' => 'nullable|numeric',
-            'location_lng' => 'nullable|numeric',
-            'opening_hours_type' => 'nullable|string',
-            'opens_at' => 'nullable|string',
-            'closes_at' => 'nullable|string'
-        ]);
+        $restaurants = [];
 
-        $restaurant = Restaurant::create($request->all());
-
-        return response()->json([
-            "data" => $restaurant,
-            "status" => "success"
-        ], 201);
-    }
-
-    
-    public function show(string $id)
-    {
-        $restaurant = Restaurant::with('owner')->find($id);
-        
-        if ($restaurant == null) {
-            return response()->json([
-                "message" => "Restaurante no encontrado",
-                "status" => "error"
-            ], 404);
+        for ($i = 0; $i < 20; $i++) {
+            $restaurants[] = [
+                'owner_id'           => $faker->numberBetween(2, 5),
+                'name'               => $faker->company,
+                'description'        => $faker->sentence(10),
+                'cuisine_type'       => $faker->randomElement($cuisineTypes),
+                'average_price'      => $faker->numberBetween(50, 500),
+                'location_lat'       => $faker->latitude(14.0, 33.0),
+                'location_lng'       => $faker->longitude(-117.0, -87.0),
+                'opening_hours_type' => $faker->randomElement($openingHoursTypes),
+                'opens_at'           => '08:00',
+                'closes_at'          => '22:00',
+                'created_at'         => now(),
+                'updated_at'         => now(),
+            ];
         }
 
-        return response()->json([
-            "data" => $restaurant,
-            "status" => "success"
-        ]);
-    }
-
-    
-    public function edit(string $id)
-    {
-        
-    }
-
-    
-    public function update(Request $request, string $id)
-    {
-        $restaurant = Restaurant::find($id);
-        
-        if ($restaurant == null) {
-            return response()->json([
-                "message" => "Restaurante no encontrado",
-                "status" => "error"
-            ], 404);
-        }
-
-        $restaurant->update($request->all());
-
-        return response()->json([
-            "data" => $restaurant,
-            "status" => "success"
-        ]);
-    }
-
-    
-    public function destroy(string $id)
-    {
-        $restaurant = Restaurant::find($id);
-        
-        if ($restaurant == null) {
-            return response()->json([
-                "message" => "Restaurante no encontrado",
-                "status" => "error"
-            ], 404);
-        }
-
-        $restaurant->delete();
-
-        return response()->json([
-            "message" => "Restaurante eliminado",
-            "status" => "success"
-        ], 204);
+        DB::table('restaurants')->insert($restaurants);
     }
 }
