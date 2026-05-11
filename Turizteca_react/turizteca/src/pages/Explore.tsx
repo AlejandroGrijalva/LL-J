@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Map, { Marker, Popup } from 'react-map-gl/mapbox';
+import type { MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useNavigate } from 'react-router-dom';
 import { getRestaurants } from '../api';
@@ -21,6 +22,7 @@ const CUISINE_FILTERS: { key: CuisineType | 'all'; label: string }[] = [
 
 export default function Explore() {
   const navigate = useNavigate();
+  const mapRef = useRef<MapRef>(null);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [filter, setFilter] = useState<CuisineType | 'all'>('all');
@@ -49,7 +51,13 @@ export default function Explore() {
   const handleMarkerClick = useCallback((r: Restaurant) => {
     setSelected(r);
     if (r.location_lat && r.location_lng) {
-      setViewState(v => ({ ...v, longitude: r.location_lng!, latitude: r.location_lat!, zoom: 14 }));
+      // flyTo with padding so the marker lands in the visible area (not behind header/cards)
+      mapRef.current?.flyTo({
+        center: [r.location_lng!, r.location_lat!],
+        zoom: 15,
+        padding: { top: 80, bottom: 230, left: 20, right: 20 },
+        duration: 600,
+      });
     }
   }, []);
 
@@ -57,6 +65,7 @@ export default function Explore() {
     <div className="h-screen w-full relative">
       {/* Map */}
       <Map
+        ref={mapRef}
         {...viewState}
         onMove={e => setViewState(e.viewState)}
         mapStyle="mapbox://styles/mapbox/streets-v12"
@@ -70,35 +79,39 @@ export default function Explore() {
           </Marker>
         )}
 
-        {/* Restaurant markers */}
-        {mapped.map(r => (
-          <Marker
-            key={r.id}
-            longitude={r.location_lng!}
-            latitude={r.location_lat!}
-            onClick={e => { e.originalEvent.stopPropagation(); handleMarkerClick(r); }}
-          >
-            <div
-              className={`flex flex-col items-center cursor-pointer transition-transform hover:scale-110 ${selected?.id === r.id ? 'scale-125' : ''}`}
+        {/* Restaurant markers — anchor="bottom" so the pin tip sits exactly on the coordinate */}
+        {mapped.map(r => {
+          const isSelected = selected?.id === r.id;
+          return (
+            <Marker
+              key={r.id}
+              longitude={r.location_lng!}
+              latitude={r.location_lat!}
+              anchor="bottom"
+              onClick={e => { e.originalEvent.stopPropagation(); handleMarkerClick(r); }}
             >
-              {selected?.id === r.id ? (
-                <div className="bg-primary text-on-primary px-3 py-1.5 rounded-xl shadow-xl flex items-center gap-1.5 text-xs font-bold">
-                  <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant</span>
-                  {r.name}
-                </div>
-              ) : (
-                <div className="w-10 h-10 bg-surface-bright rounded-full shadow-lg flex items-center justify-center border-2 border-outline/20 text-lg">
+              <div className={`flex flex-col items-center cursor-pointer transition-transform ${isSelected ? 'scale-125' : 'hover:scale-110'}`}>
+                {/* Circle pin */}
+                <div className={`w-11 h-11 rounded-full shadow-lg flex items-center justify-center text-xl border-2 transition-colors ${
+                  isSelected
+                    ? 'bg-primary border-white text-white scale-110'
+                    : 'bg-surface-bright border-outline/20'
+                }`}>
                   {CUISINE_EMOJI[r.cuisine_type] || '🍽️'}
                 </div>
-              )}
-              {selected?.id === r.id && (
-                <div className="w-3 h-3 bg-primary rotate-45 -mt-1.5 shadow" />
-              )}
-            </div>
-          </Marker>
-        ))}
+                {/* Pin tail — always at the bottom pointing to exact coordinate */}
+                <div className={`w-0 h-0 -mt-px`} style={{
+                  borderLeft: '5px solid transparent',
+                  borderRight: '5px solid transparent',
+                  borderTop: `8px solid ${isSelected ? '#9e3d00' : 'white'}`,
+                  filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.2))',
+                }} />
+              </div>
+            </Marker>
+          );
+        })}
 
-        {/* Popup */}
+        {/* Popup — offset accounts for the pin circle (44px) + tail (8px) = 52px above coordinate */}
         {selected && selected.location_lat && selected.location_lng && (
           <Popup
             longitude={selected.location_lng}
@@ -106,7 +119,7 @@ export default function Explore() {
             onClose={() => setSelected(null)}
             closeButton={false}
             anchor="bottom"
-            offset={20}
+            offset={58}
           >
             <div
               className="bg-surface-bright rounded-2xl p-3 shadow-xl flex gap-3 cursor-pointer w-64"
@@ -215,20 +228,20 @@ export default function Explore() {
       <div className="absolute right-6 top-1/2 -translate-y-1/2 z-10 flex flex-col gap-2">
         <button
           className="w-11 h-11 bg-surface-bright/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-primary active:scale-90 transition-transform"
-          onClick={() => setViewState(v => ({ ...v, zoom: Math.min(v.zoom + 1, 20) }))}
+          onClick={() => mapRef.current?.zoomIn()}
         >
           <span className="material-symbols-outlined">add</span>
         </button>
         <button
           className="w-11 h-11 bg-surface-bright/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-primary active:scale-90 transition-transform"
-          onClick={() => setViewState(v => ({ ...v, zoom: Math.max(v.zoom - 1, 2) }))}
+          onClick={() => mapRef.current?.zoomOut()}
         >
           <span className="material-symbols-outlined">remove</span>
         </button>
         {userLocation && (
           <button
             className="w-11 h-11 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center mt-3 active:scale-90 transition-transform"
-            onClick={() => setViewState(v => ({ ...v, longitude: userLocation.lng, latitude: userLocation.lat, zoom: 13 }))}
+            onClick={() => mapRef.current?.flyTo({ center: [userLocation.lng, userLocation.lat], zoom: 13, duration: 600 })}
           >
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>near_me</span>
           </button>

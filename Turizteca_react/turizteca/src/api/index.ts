@@ -15,7 +15,8 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
   res => res,
   err => {
-    if (err.response?.status === 401) {
+    // Only redirect to login if the user HAD a token (expired session), not for public-route 401s
+    if (err.response?.status === 401 && localStorage.getItem('token')) {
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
